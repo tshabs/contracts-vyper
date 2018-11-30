@@ -38,7 +38,6 @@ def transfer(_to : address, _value : uint256(wei)):
     self.balances[_sender] = self.balances[_sender] - _value
     self.balances[_to] = self.balances[_to] + _value
     log.Transfer(_sender, _to, _value)
-    return True
 
 @public
 def transferFrom(_from : address, _to : address, _value : uint256(wei)):
@@ -48,14 +47,12 @@ def transferFrom(_from : address, _to : address, _value : uint256(wei)):
     self.balances[_to] = self.balances[_to] + _value
     self.allowances[_from][_sender] = allowance - _value
     log.Transfer(_from, _to, _value)
-    return True
 
 @public
 def approve(_spender : address, _value : uint256(wei)):
     _sender: address = msg.sender
     self.allowances[_sender][_spender] = _value
     log.Approval(_sender, _spender, _value)
-    return True
 
 @public
 @constant

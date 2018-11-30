@@ -123,7 +123,6 @@ def DEN_exchange(w3, exchange_abi, factory, DEN_token):
     exchange.addLiquidity(0, DEN_RESERVE, DEADLINE, transact={'value': ETH_RESERVE})
     return exchange
 
-
 @pytest.fixture
 def swap_input():
     def swap_input(input_amount, input_reserve, output_reserve):
@@ -147,3 +146,38 @@ def assert_fail():
         with raises(Exception):
             func()
     return assert_fail
+
+@pytest.fixture
+def assert_tx_fail():
+    def assert_fail(func):
+        with raises(TransactionFailed):
+            func()
+    return assert_fail
+
+@pytest.fixture
+def NOB_token(w3):
+    deploy = create_contract(w3, 'contracts/test_contracts/nobool_ERC20.vy')
+    tx_hash = deploy.constructor(b'NOB Token', b'NOB', 18, 100000*10**18).transact()
+    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
+    return ConciseContract(w3.eth.contract(
+        address=tx_receipt.contractAddress,
+        abi=deploy.abi
+    ))
+
+@pytest.fixture
+def NOB_exchange(w3, NOB_token, factory, assert_tx_fail):
+    deploy = create_contract(w3, 'contracts/nobool_ERC20_exchange.vy')
+    tx_hash = deploy.constructor().transact()
+    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
+    addr = tx_receipt.contractAddress
+    exchange = ConciseContract(w3.eth.contract(
+        address=addr,
+        abi=deploy.abi
+    ))
+    a0 = w3.eth.accounts[0]
+    NOB_token.approve(addr, DEN_RESERVE + HAY_RESERVE, transact={})
+    exchange.setup(NOB_token.address, factory.address, transact={})
+    # Can't call setup twice
+    assert_tx_fail(lambda: exchange.setup(NOB_token.address, factory.address, transact={}))
+    exchange.addLiquidity(0, HAY_RESERVE, DEADLINE, transact={'value': ETH_RESERVE})
+    return exchange
