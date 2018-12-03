@@ -303,8 +303,6 @@ def tokenToTokenInput(tokens_sold: uint256, min_tokens_bought: uint256, min_eth_
 # @return Amount of Tokens (token_addr) bought.
 @public
 def tokenToTokenSwapInput(tokens_sold: uint256, min_tokens_bought: uint256, min_eth_bought: uint256(wei), deadline: timestamp, token_addr: address) -> uint256:
-    # CUSTOM EXCHANGE - CHECK INPUT IS NOT self.token
-    assert token_addr != self.tokenAddress
     exchange_addr: address = self.factory.getExchange(token_addr)
     return self.tokenToTokenInput(tokens_sold, min_tokens_bought, min_eth_bought, deadline, msg.sender, msg.sender, exchange_addr)
 
@@ -320,8 +318,6 @@ def tokenToTokenSwapInput(tokens_sold: uint256, min_tokens_bought: uint256, min_
 # @return Amount of Tokens (token_addr) bought.
 @public
 def tokenToTokenTransferInput(tokens_sold: uint256, min_tokens_bought: uint256, min_eth_bought: uint256(wei), deadline: timestamp, recipient: address, token_addr: address) -> uint256:
-    # CUSTOM EXCHANGE - CHECK INPUT IS NOT self.token
-    assert token_addr != self.tokenAddress
     exchange_addr: address = self.factory.getExchange(token_addr)
     return self.tokenToTokenInput(tokens_sold, min_tokens_bought, min_eth_bought, deadline, msg.sender, recipient, exchange_addr)
 
@@ -349,8 +345,6 @@ def tokenToTokenOutput(tokens_bought: uint256, max_tokens_sold: uint256, max_eth
 # @return Amount of Tokens (self.token) sold.
 @public
 def tokenToTokenSwapOutput(tokens_bought: uint256, max_tokens_sold: uint256, max_eth_sold: uint256(wei), deadline: timestamp, token_addr: address) -> uint256:
-    # CUSTOM EXCHANGE - CHECK INPUT IS NOT self.token
-    assert token_addr != self.tokenAddress
     exchange_addr: address = self.factory.getExchange(token_addr)
     return self.tokenToTokenOutput(tokens_bought, max_tokens_sold, max_eth_sold, deadline, msg.sender, msg.sender, exchange_addr)
 
@@ -366,8 +360,6 @@ def tokenToTokenSwapOutput(tokens_bought: uint256, max_tokens_sold: uint256, max
 # @return Amount of Tokens (self.token) sold.
 @public
 def tokenToTokenTransferOutput(tokens_bought: uint256, max_tokens_sold: uint256, max_eth_sold: uint256(wei), deadline: timestamp, recipient: address, token_addr: address) -> uint256:
-    # CUSTOM EXCHANGE - CHECK INPUT IS NOT self.token
-    assert token_addr != self.tokenAddress
     exchange_addr: address = self.factory.getExchange(token_addr)
     return self.tokenToTokenOutput(tokens_bought, max_tokens_sold, max_eth_sold, deadline, msg.sender, recipient, exchange_addr)
 
