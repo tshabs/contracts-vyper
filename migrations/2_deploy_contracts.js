@@ -16,13 +16,5 @@ module.exports = function(deployer) {
   deployer.deploy(uniswap_exchange);
   deployer.deploy(uniswap_factory);
 
-  uniswap_factory.deployed(uniswap_factory).then(function(instance){
-      instance.initializeFactory(uniswap_exchange.address).then(function(tx) {
-        console.log("Initialized factory successfully. (set exchange template address to: ", uniswap_exchange.address, ")");
-        console.log(tx);
-        return deployer;
-      }).catch(function(e) {
-        console.log(e);
-      });
-  });
+  return deployer;
 };
